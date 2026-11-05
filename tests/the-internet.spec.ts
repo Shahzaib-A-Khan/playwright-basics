@@ -28,3 +28,19 @@ test('file upload shows confirmation', async ({ page }) => {
   await page.locator('#file-submit').click();
   await expect(page.getByRole('heading', { name: 'File Uploaded!' })).toBeVisible();
 });
+
+test('valid login shows success message', async ({ page }) => {
+  await page.goto('https://the-internet.herokuapp.com/login');
+  await page.getByLabel('Username').fill('tomsmith');
+  await page.getByLabel('Password').fill('SuperSecretPassword!');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.locator('#flash')).toContainText('You logged into a secure area!');
+});
+
+test('invalid login shows error message', async ({ page }) => {
+  await page.goto('https://the-internet.herokuapp.com/login');
+  await page.getByLabel('Username').fill('tomsmith');
+  await page.getByLabel('Password').fill('wrongpassword');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.locator('#flash')).toContainText('Your password is invalid!');
+});
